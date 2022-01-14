@@ -1,14 +1,14 @@
 #!/usr/bin/python3
-""" Creates and distributes an archive to your web servers, 
-using do_pack and do_deploy functions 
+""" Creates and distributes an archive to your web servers,
+using do_pack and do_deploy functions.
 """
 
-from fabric.api import run, put, env
+from fabric.api import *
 from datetime import datetime
 import os
 
 env.hosts = ["34.74.11.87", "54.211.225.96"]
-
+env.user = 'ubuntu'
 
 def do_pack():
     """ Function to generate a tgz from web_static"""
@@ -47,10 +47,13 @@ def do_deploy(archive_path):
     else:
         return False
 
+
 def deploy():
     """ Uses the functions do_pack and do_deploy to create and distribute
     an archive to a specified web servers
     """
-    if do_pack() is None:
+    new_archive = do_pack()
+    if new_archive is None:
         return False
-    return do_deploy(do_pack)
+    new_load = do_deploy(new_archive)
+    return new_load
