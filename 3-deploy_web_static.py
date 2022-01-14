@@ -10,6 +10,7 @@ import os
 env.hosts = ["34.74.11.87", "54.211.225.96"]
 env.user = 'ubuntu'
 
+
 def do_pack():
     """ Function to generate a tgz from web_static"""
     try:
@@ -40,6 +41,7 @@ def do_deploy(archive_path):
             run('rm -rf /data/web_static/current')
             run('ln -s {} /data/web_static/current'.format(dest))
 
+            print("New version deployed!")
             return True
 
         except:
