@@ -1,7 +1,6 @@
 <center> <h1>HBNB - The Console</h1> </center>
 
 This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
-__T__
 ---
 
 <center><h3>Repository Contents by Project Task</h3> </center>
@@ -140,3 +139,15 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 (hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
 ```
 <br>
+
+## Web Framework
+### Learning objectives
+*   What is a Web Framework
+*   How to build a web framework with Flask
+*   How to define routes in Flask
+*   What is a route
+*   How to handle variables in a route
+*   What is a template
+*   How to create a HTML response in Flask by using a template
+*   How to create a dynamic template (loops, conditions…)
+*   How to display in HTML data from a MySQL database
