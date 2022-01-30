@@ -1,16 +1,13 @@
 #!/usr/bin/python3
 """ Console Module """
-
-
 import cmd
 import sys
-
-import models
 from models.base_model import BaseModel
-from models.user import User
-from models.place import Place
+from models.__init__ import storage
 from models.state import State
 from models.city import City
+from models.user import User
+from models.place import Place
 from models.amenity import Amenity
 from models.review import Review
 
@@ -116,43 +113,27 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
+        split_array = args.split(" ")
         """ Create an object of any class"""
-
         if not args:
             print("** class name missing **")
             return
-        new_list = args.split(" ")
-
-        if new_list[0] not in HBNBCommand.classes:
+        elif split_array[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
-        new_instance = HBNBCommand.classes[new_list[0]]()
-
-        for arg in new_list[1:]:
-            values = arg.split('=')
-            value = values[1]
-            key = values[0]
-
-            if '\"' in value:
-                value = value.replace('"', '').replace('_', ' ')
-
-            elif '.' in value:
-                try:
-                    value = float(value)
-                except Exception:
-                    value = None
+        new_instance = HBNBCommand.classes[split_array[0]]()
+        split_parameters = split_array[1:]
+        for value in split_parameters:
+            split = value.split("=")
+            if (split[1][0] == '"'):
+                new_instance.__dict__[
+                    split[0]] = split[1][1:-1].replace("_", " ")
             else:
-                try:
-                    value = int(value)
-                except Exception:
-                    value = None
-
-            if value is not None:
-                setattr(new_instance, key, value)
-        models.storage.new(new_instance)
-        models.storage.save()
+                new_instance.__dict__[split[0]] = split[1].replace("_", " ")
+        storage.new(new_instance)
+        storage.save()
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -183,7 +164,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(models.storage.all()[key])
+            print(storage._FileStorage__objects[key])
         except KeyError:
             print("** no instance found **")
 
@@ -215,8 +196,8 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            models.storage.delete(models.storage.all()[key])
-            models.storage.save()
+            del(storage.all()[key])
+            storage.save()
         except KeyError:
             print("** no instance found **")
 
@@ -230,14 +211,17 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0]
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in models.storage.all(args).items():
+            dict = storage.all(HBNBCommand.classes[args])
+            for k, v in dict.items():
+                del v.__dict__['_sa_instance_state']
                 print_list.append(str(v))
         else:
-            for k, v in models.storage.all().items():
+            for k, v in storage.all().items():
+                del v.__dict__['_sa_instance_state']
                 print_list.append(str(v))
 
         print(print_list)
@@ -250,7 +234,7 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for k, v in models.storage.all().items():
+        for k, v in storage._FileStorage__objects.items():
             if args == k.split('.')[0]:
                 count += 1
         print(count)
@@ -286,12 +270,12 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         # determine if key is present
-        if key not in models.storage.all():
+        if key not in storage.all():
             print("** no instance found **")
             return
 
         # first determine if kwargs or args
-        if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
+        if '{' in args[2] and '}' in args[2] and type(eval(args[2])) == dict:
             kwargs = eval(args[2])
             args = []  # reformat kwargs into list, ex: [<name>, <value>, ...]
             for k, v in kwargs.items():
@@ -320,7 +304,7 @@ class HBNBCommand(cmd.Cmd):
             args = [att_name, att_val]
 
         # retrieve dictionary of current objects
-        new_dict = models.storage.all()[key]
+        new_dict = storage.all()[key]
 
         # iterate through attr names and values
         for i, att_name in enumerate(args):

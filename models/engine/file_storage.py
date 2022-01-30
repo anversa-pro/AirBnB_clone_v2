@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
+from os import path
 
 
 class FileStorage:
@@ -9,21 +10,21 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
+        dict_filter = {}
         """Returns a dictionary of models currently in storage"""
-
         if cls is None:
-            return self.__objects
-
+            return FileStorage.__objects
         else:
-            newlist = {}
-            for key, value in self.__objects.items():
-                if isinstance(value, cls):
-                    newlist[key] = value
-            return newlist
+            for key, value in FileStorage.__objects.items():
+                if value.__class__ == cls:
+                    dict_filter[key] = value
+            return dict_filter
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
+        del obj.__dict__['_sa_instance_state']
+        str_class = str(obj).split("]")[0][1:]
+        self.all().update({str_class + '.' + obj.id: obj})
 
     def save(self):
         """Saves storage dictionary to file"""
@@ -32,7 +33,7 @@ class FileStorage:
             temp.update(FileStorage.__objects)
             for key, val in temp.items():
                 temp[key] = val.to_dict()
-            json.dump(temp, f, indent=4)
+            json.dump(temp, f)
 
     def reload(self):
         """Loads storage dictionary from file"""
@@ -59,13 +60,10 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Deletes an instance based on the class name and id."""
-
+        """Delete an object"""
         if obj is not None:
-            id = obj.__class__.__name__ + '.' + obj.id
-            if id in self.__objects.keys():
-                del(self.__objects[id])
-
-    def close(self):
-        """Handles storage close"""
-        self.reload()
+            del FileStorage.__objects[obj.to_dict()[
+                '__class__'] + '.' + obj.id]
+            self.save()
+        else:
+            pass
