@@ -8,6 +8,7 @@ from sqlalchemy.orm.base import attribute_str
 import sqlalchemy
 import os
 
+
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = "states"
