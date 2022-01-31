@@ -24,7 +24,7 @@ def hbnbFunction():
 def textCFunction(text):
     """ Responsible of the /C/text route, displays text """
     text = text.replace('_', ' ')
-    return f'C {text}'
+    return ("C {}".format(text))
 
 
 @app.route('/python/', strict_slashes=False)
@@ -32,7 +32,7 @@ def textCFunction(text):
 def textPFunction(text='is cool'):
     """ Responsible of the /python/text route, displays text """
     text = text.replace('_', ' ')
-    return f'Python {text}'
+    return ("Python {}".format(text))
 
 
 if __name__ == '__main__':
