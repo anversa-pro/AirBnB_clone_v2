@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" 
+"""
 Script that starts a Flask web application listening 0.0.0.0 port 5000:
 The route of the domain / displays 'Hello HBNB!'
 """
@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def domainFunction():
-    """ 
-    Responsible of the domain route, displays a message 
+    """
+    Responsible of the domain route, displays a message
     """
     return 'Hello HBNB!'
 
@@ -20,14 +20,14 @@ def domainFunction():
 @app.route('/hbnb', strict_slashes=False)
 def hbnbFunction():
     """
-    Responsible of the /hbhb route, displays a message 
+    Responsible of the /hbhb route, displays a message
     """
     return 'HBNB'
 
 
 @app.route('/c/<text>', strict_slashes=False)
 def textFunction(text):
-    """ 
+    """
     Responsible of the /C/text route, displays text
     """
     text = text.replace('_', ' ')
