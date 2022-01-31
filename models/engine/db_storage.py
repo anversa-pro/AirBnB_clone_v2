@@ -49,6 +49,10 @@ class DBStorage():
             typ_obj = str(cls).split(" ")[1].split(".")[-1][:-2]
             for new_object in query:
                 new_dictionary[typ_obj + '.' + new_object.id] = new_object
+            try:
+                del dictionary["_sa_instance_state"]
+            except Exception:
+                pass
         return new_dictionary
 
     def new(self, obj):
@@ -68,7 +72,7 @@ class DBStorage():
 
     def reload(self):
         """reload the session"""
-        from models.base_model import *
+        from models.base_model import BaseModel, Base
         from models.amenity import Amenity
         from models.city import City
         from models.place import Place
